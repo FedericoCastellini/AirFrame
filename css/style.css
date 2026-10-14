@@ -1,3 +1,4 @@
+
 /* =========================================
    AIRFRAME — PREMIUM CINEMATIC STYLES
 ========================================= */
@@ -190,9 +191,7 @@ a {
     border-radius: 2px;
     font-size: 10px;
     letter-spacing: 0.08em;
-    transition:
-        background 180ms ease,
-        color 180ms ease,
+    transition: background 180ms ease, color 180ms ease,
         border-color 180ms ease;
 }
 
@@ -220,9 +219,7 @@ a {
     height: 1px;
     margin: 5px 0;
     background: currentColor;
-    transition:
-        transform 180ms ease,
-        opacity 180ms ease;
+    transition: transform 180ms ease, opacity 180ms ease;
 }
 
 .menu-toggle[aria-expanded="true"] span:first-child {
@@ -286,11 +283,7 @@ a {
             rgba(53, 65, 92, 0.18),
             transparent 43%
         ),
-        linear-gradient(
-            180deg,
-            rgba(8, 9, 11, 0.08),
-            #08090b 100%
-        );
+        linear-gradient(180deg, rgba(8, 9, 11, 0.08), #08090b 100%);
     content: "";
     pointer-events: none;
 }
@@ -365,9 +358,7 @@ a {
     font-size: 10px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    transition:
-        background 180ms ease,
-        border-color 180ms ease,
+    transition: background 180ms ease, border-color 180ms ease,
         color 180ms ease;
 }
 
@@ -530,7 +521,7 @@ a {
 }
 
 /* =========================================
-   PORTFOLIO
+   PROJECTS — CINEMATIC VIDEO SHOWCASE
 ========================================= */
 
 .projects-section {
@@ -554,65 +545,103 @@ a {
     min-width: 0;
 }
 
-.project-image,
-.project-visual {
+/*
+   Contenitore orizzontale 16:9.
+   I video riempiono il riquadro senza deformazioni.
+*/
+
+.project-image {
     position: relative;
-    display: flex;
-    align-items: flex-end;
-    aspect-ratio: 4 / 5;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
-    padding: 22px;
-    background:
-        radial-gradient(
-            ellipse at 50% 35%,
-            rgba(90, 106, 143, 0.22),
-            transparent 42%
-        ),
-        linear-gradient(145deg, #171b22, #0b0c0f 75%);
+    padding: 0;
+    background: #0b0c0f;
+    isolation: isolate;
 }
 
-.project-image::before,
-.project-visual::before {
+/* Cornice sottile premium */
+
+.project-image::before {
     position: absolute;
-    z-index: 1;
+    z-index: 3;
     inset: 0;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.09);
     content: "";
     pointer-events: none;
 }
 
-.project-image img,
-.project-visual img {
+/* Overlay cinematografico per mantenere leggibili le etichette */
+
+.project-image::after {
     position: absolute;
+    z-index: 1;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 650ms cubic-bezier(0.2, 0.65, 0.3, 1);
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.24) 0%,
+        transparent 32%,
+        transparent 55%,
+        rgba(0, 0, 0, 0.58) 100%
+    );
+    content: "";
+    pointer-events: none;
 }
 
-.project-card:hover .project-image img,
-.portfolio-card:hover .project-visual img {
-    transform: scale(1.045);
+/* Video senza controlli visibili */
+
+.project-video {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: center;
+    border: 0;
+    background: #08090b;
+    pointer-events: none;
 }
+
+/* Eventuale zoom molto leggero al passaggio del mouse */
+
+.project-card .project-video {
+    transform: scale(1);
+    transition: transform 800ms cubic-bezier(0.2, 0.65, 0.3, 1);
+}
+
+.project-card:hover .project-video {
+    transform: scale(1.025);
+}
+
+/* Etichette sovrapposte al video */
 
 .project-number {
     position: absolute;
-    z-index: 2;
-    top: 20px;
-    left: 20px;
-    color: #c4c6cc;
-    font-size: 10px;
+    z-index: 4;
+    top: 15px;
+    left: 15px;
+    color: #f0f0f0;
+    font-size: 9px;
     letter-spacing: 0.12em;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
 }
 
 .project-image-label {
-    position: relative;
-    z-index: 2;
+    position: absolute;
+    z-index: 4;
+    right: 15px;
+    bottom: 14px;
+    left: 15px;
     color: #f2f2f0;
-    font-size: 10px;
-    letter-spacing: 0.16em;
+    font-size: 9px;
+    letter-spacing: 0.13em;
+    line-height: 1.5;
     text-transform: uppercase;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
 }
 
 .project-info {
@@ -638,6 +667,7 @@ a {
 }
 
 .project-arrow {
+    flex-shrink: 0;
     color: #aeb9d5;
     font-size: 20px;
     transition: transform 180ms ease;
@@ -645,6 +675,48 @@ a {
 
 .project-card:hover .project-arrow {
     transform: translate(3px, -3px);
+}
+
+/* Supporto per eventuali immagini di altri progetti */
+
+.project-visual {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    padding: 22px;
+    background:
+        radial-gradient(
+            ellipse at 50% 35%,
+            rgba(90, 106, 143, 0.22),
+            transparent 42%
+        ),
+        linear-gradient(145deg, #171b22, #0b0c0f 75%);
+}
+
+.project-visual::before {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    content: "";
+    pointer-events: none;
+}
+
+.project-image img,
+.project-visual img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 650ms cubic-bezier(0.2, 0.65, 0.3, 1);
+}
+
+.project-card:hover .project-image img,
+.portfolio-card:hover .project-visual img {
+    transform: scale(1.045);
 }
 
 /* =========================================
@@ -744,8 +816,7 @@ a {
     object-fit: cover;
     object-position: center;
     filter: saturate(0.82);
-    transition:
-        transform 800ms cubic-bezier(0.2, 0.65, 0.3, 1),
+    transition: transform 800ms cubic-bezier(0.2, 0.65, 0.3, 1),
         filter 500ms ease;
 }
 
@@ -870,9 +941,7 @@ a {
     color: #e6e7e9;
     font-size: 15px;
     overflow-wrap: anywhere;
-    transition:
-        color 180ms ease,
-        border-color 180ms ease;
+    transition: color 180ms ease, border-color 180ms ease;
 }
 
 .contact-links a:first-of-type {
@@ -890,18 +959,14 @@ a {
     border-radius: 50%;
     color: #42d392;
     font-size: 15px;
-    transition:
-        background 180ms ease,
-        color 180ms ease,
+    transition: background 180ms ease, color 180ms ease,
         border-color 180ms ease;
 }
 
 .contact-arrow {
     margin-left: auto;
     color: var(--muted);
-    transition:
-        transform 180ms ease,
-        color 180ms ease;
+    transition: transform 180ms ease, color 180ms ease;
 }
 
 .contact-links a:hover {
@@ -1135,9 +1200,43 @@ a {
         gap: 35px;
     }
 
+    /* Mantiene il formato orizzontale anche sul telefono */
     .project-image,
     .project-visual {
-        aspect-ratio: 5 / 4;
+        aspect-ratio: 16 / 9;
+    }
+
+    .project-image {
+        width: 100%;
+        padding: 0;
+    }
+
+    .project-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .project-number {
+        top: 12px;
+        left: 12px;
+        font-size: 8px;
+    }
+
+    .project-image-label {
+        right: 12px;
+        bottom: 10px;
+        left: 12px;
+        font-size: 8px;
+    }
+
+    .project-info {
+        padding-top: 15px;
+    }
+
+    .project-info h3 {
+        font-size: 18px;
     }
 
     .services-section {
