@@ -123,10 +123,15 @@ loader.load(
             return;
         }
 
+
         drone.position.sub(center);
         drone.scale.setScalar(2.5 / maxDimension);
 
+        // Allineamento visivo con il cerchio
+        drone.position.x += 0.20;
+
         pivot.add(drone);
+
         pivot.rotation.set(0, -0.45, 0);
 
         modelLoaded = true;
