@@ -1,133 +1,416 @@
+javascript
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
+/* =========================================================
+   AIRFRAME — THREE.JS / DJI AVATA 2
+   ========================================================= */
+
 const container = document.getElementById("model-container");
+const canvas = document.getElementById("drone-canvas");
 
-if (!container) {
-throw new Error("Contenitore del modello 3D non trovato.");
+if (!container || !canvas) {
+  console.error("AIRFRAME: contenitore o canvas 3D non trovato.");
+} else {
+  initializeDrone();
 }
 
-const scene = new THREE.Scene();
-scene.background = null;
+function initializeDrone() {
+  /* -------------------------------------------------------
+     SCENA
+     ------------------------------------------------------- */
 
-const camera = new THREE.PerspectiveCamera(
-35,
-container.clientWidth / container.clientHeight,
-0.1,
-1000
-);
-camera.position.set(0, 0.8, 6.5);
+  const scene = new THREE.Scene();
 
-const renderer = new THREE.WebGLRenderer({
-antialias: true,
-alpha: true,
-powerPreference: "high-performance"
-});
+  const camera = new THREE.PerspectiveCamera(
+    35,
+    1,
+    0.1,
+    100
+  );
 
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(container.clientWidth, container.clientHeight);
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.2;
-container.appendChild(renderer.domElement);
+  camera.position.set(0, 0.35, 6.5);
+  camera.lookAt(0, 0, 0);
 
-// Illuminazione cinematografica
-scene.add(new THREE.HemisphereLight(0xffffff, 0x303746, 2));
+  /* -------------------------------------------------------
+     RENDERER
+     Utilizza il canvas già presente nell'HTML.
+     ------------------------------------------------------- */
 
-const keyLight = new THREE.DirectionalLight(0xffffff, 3);
-keyLight.position.set(4, 6, 5);
-scene.add(keyLight);
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: true,
+    powerPreference: "high-performance"
+  });
 
-const rimLight = new THREE.DirectionalLight(0x8baaff, 2.5);
-rimLight.position.set(-5, 3, -4);
-scene.add(rimLight);
+  renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio || 1, 2)
+  );
 
-const fillLight = new THREE.DirectionalLight(0xc7b89b, 1.5);
-fillLight.position.set(0, -2, 4);
-scene.add(fillLight);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.2;
 
-// Gruppo di rotazione del drone
-const pivot = new THREE.Group();
-scene.add(pivot);
+  renderer.setClearColor(0x000000, 0);
 
-let drone = null;
-let targetRotationX = 0;
-let targetRotationY = -0.45;
+  /* -------------------------------------------------------
+     ILLUMINAZIONE CINEMATOGRAFICA
+     ------------------------------------------------------- */
 
-const loader = new GLTFLoader();
+  const ambientLight = new THREE.HemisphereLight(
+    0xffffff,
+    0x303746,
+    2
+  );
 
-loader.load(
-"./assets/models/dji-avata-2-optimized.glb",
+  scene.add(ambientLight);
 
-(gltf) => {
-drone = gltf.scene;
+  const keyLight = new THREE.DirectionalLight(
+    0xffffff,
+    3
+  );
 
-// Centra e dimensiona il modello
-const box = new THREE.Box3().setFromObject(drone);
-const size = box.getSize(new THREE.Vector3());
-const center = box.getCenter(new THREE.Vector3());
-const maxDimension = Math.max(size.x, size.y, size.z);
+  keyLight.position.set(4, 6, 5);
+  scene.add(keyLight);
 
-if (!maxDimension) {
-  console.error("Il modello 3D non ha dimensioni valide.");
-  return;
+  const rimLight = new THREE.DirectionalLight(
+    0x8baaff,
+    2.5
+  );
+
+  rimLight.position.set(-5, 3, -4);
+  scene.add(rimLight);
+
+  const fillLight = new THREE.DirectionalLight(
+    0xc7b89b,
+    1.5
+  );
+
+  fillLight.position.set(0, -2, 4);
+  scene.add(fillLight);
+
+  const topLight = new THREE.DirectionalLight(
+    0xffffff,
+    1.2
+  );
+
+  topLight.position.set(0, 7, 0);
+  scene.add(topLight);
+
+  /* -------------------------------------------------------
+     MODELLO 3D
+     ------------------------------------------------------- */
+
+  const pivot = new THREE.Group();
+  scene.add(pivot);
+
+  let drone = null;
+  let modelLoaded = false;
+
+  let targetRotationX = 0;
+  let targetRotationY = -0.45;
+
+  let currentRotationX = 0;
+  let currentRotationY = -0.45;
+
+  const loader = new GLTFLoader();
+
+  loader.load(
+    "./assets/models/dji-avata-2-optimized.glb",
+
+    (gltf) => {
+      drone = gltf.scene;
+
+      // Calcola le dimensioni reali del modello.
+      const bounds = new THREE.Box3().setFromObject(drone);
+      const size = bounds.getSize(new THREE.Vector3());
+      const center = bounds.getCenter(new THREE.Vector3());
+
+      const maxDimension = Math.max(
+        size.x,
+        size.y,
+        size.z
+      );
+
+      if (!Number.isFinite(maxDimension) || maxDimension <= 0) {
+        console.error("AIRFRAME: dimensioni del modello non valide.");
+        drone = null;
+        return;
+      }
+
+      // Centra il modello sul proprio punto di rotazione.
+      drone.position.sub(center);
+
+      // Mantiene proporzioni e orientamento originali.
+      drone.scale.setScalar(3.2 / maxDimension);
+
+      pivot.add(drone);
+
+      // Imposta l'inquadratura iniziale.
+      pivot.rotation.set(0, -0.45, 0);
+
+      modelLoaded = true;
+
+      console.info("AIRFRAME: modello 3D caricato.");
+    },
+
+    undefined,
+
+    (error) => {
+      // Nessun messaggio tecnico viene mostrato nella pagina.
+      console.error(
+        "AIRFRAME: impossibile caricare il modello DJI Avata 2.",
+        error
+      );
+    }
+  );
+
+  /* -------------------------------------------------------
+     INTERAZIONE CON IL MOUSE E IL TOUCH
+     ------------------------------------------------------- */
+
+  let isDragging = false;
+  let activePointerId = null;
+
+  let previousPointerX = 0;
+  let previousPointerY = 0;
+
+  const rotationSensitivity = 0.008;
+
+  canvas.addEventListener("pointerdown", (event) => {
+    if (event.pointerType === "mouse") {
+      isDragging = true;
+      activePointerId = event.pointerId;
+
+      previousPointerX = event.clientX;
+      previousPointerY = event.clientY;
+
+      canvas.style.cursor = "grabbing";
+
+      canvas.setPointerCapture(event.pointerId);
+    } else {
+      isDragging = true;
+      activePointerId = event.pointerId;
+
+      previousPointerX = event.clientX;
+      previousPointerY = event.clientY;
+
+      canvas.setPointerCapture(event.pointerId);
+    }
+  });
+
+  canvas.addEventListener("pointermove", (event) => {
+    if (!modelLoaded) return;
+
+    if (event.pointerType === "mouse" && !isDragging) {
+      // Movimento fluido quando si sposta il mouse
+      // sopra il modello, senza richiedere un clic.
+      const rect = container.getBoundingClientRect();
+
+      if (!rect.width || !rect.height) return;
+
+      const x = (event.clientX - rect.left) / rect.width;
+      const y = (event.clientY - rect.top) / rect.height;
+
+      targetRotationY = (x - 0.5) * 1.4 - 0.45;
+      targetRotationX = (y - 0.5) * 0.5;
+
+      return;
+    }
+
+    if (
+      !isDragging ||
+      event.pointerId !== activePointerId
+    ) {
+      return;
+    }
+
+    const deltaX = event.clientX - previousPointerX;
+    const deltaY = event.clientY - previousPointerY;
+
+    targetRotationY += deltaX * rotationSensitivity;
+    targetRotationX += deltaY * rotationSensitivity;
+
+    targetRotationX = THREE.MathUtils.clamp(
+      targetRotationX,
+      -0.65,
+      0.65
+    );
+
+    previousPointerX = event.clientX;
+    previousPointerY = event.clientY;
+  });
+
+  function stopDragging(event) {
+    if (event.pointerId !== activePointerId) return;
+
+    isDragging = false;
+    activePointerId = null;
+
+    if (event.pointerType === "mouse") {
+      canvas.style.cursor = "grab";
+    }
+  }
+
+  canvas.addEventListener("pointerup", stopDragging);
+  canvas.addEventListener("pointercancel", stopDragging);
+  canvas.addEventListener("lostpointercapture", stopDragging);
+
+  canvas.addEventListener("pointerleave", () => {
+    if (!isDragging) {
+      canvas.style.cursor = "grab";
+    }
+  });
+
+  /* -------------------------------------------------------
+     RIDIMENSIONAMENTO RESPONSIVE
+     ------------------------------------------------------- */
+
+  function resizeRenderer() {
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    if (width <= 0 || height <= 0) return;
+
+    camera.aspect = width / height;
+
+    // Allontana leggermente la camera sugli schermi stretti.
+    if (width < 700) {
+      camera.position.z = 7.1;
+      camera.position.y = 0.25;
+    } else {
+      camera.position.z = 6.5;
+      camera.position.y = 0.35;
+    }
+
+    camera.lookAt(0, 0, 0);
+    camera.updateProjectionMatrix();
+
+    renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio || 1, 2)
+    );
+
+    renderer.setSize(width, height, false);
+  }
+
+  const resizeObserver = new ResizeObserver(() => {
+    resizeRenderer();
+  });
+
+  resizeObserver.observe(container);
+
+  window.addEventListener("resize", resizeRenderer);
+
+  resizeRenderer();
+
+  /* -------------------------------------------------------
+     ANIMAZIONE
+     ------------------------------------------------------- */
+
+  const clock = new THREE.Clock();
+
+  let animationFrameId = null;
+  let isPageVisible = !document.hidden;
+
+  function animate() {
+    if (!isPageVisible) return;
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    const elapsed = clock.getElapsedTime();
+
+    if (modelLoaded && drone) {
+      // Interpolazione morbida della rotazione.
+      currentRotationX +=
+        (targetRotationX - currentRotationX) * 0.045;
+
+      currentRotationY +=
+        (targetRotationY - currentRotationY) * 0.045;
+
+      pivot.rotation.x = currentRotationX;
+      pivot.rotation.y = currentRotationY;
+
+      // Leggera sospensione cinematografica.
+      pivot.position.y = Math.sin(elapsed * 0.8) * 0.045;
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  animate();
+
+  /* -------------------------------------------------------
+     OTTIMIZZAZIONE QUANDO LA PAGINA NON È VISIBILE
+     ------------------------------------------------------- */
+
+  document.addEventListener("visibilitychange", () => {
+    isPageVisible = !document.hidden;
+
+    if (isPageVisible) {
+      clock.start();
+      animate();
+    } else {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+  });
+
+  /* -------------------------------------------------------
+     MENU MOBILE
+     ------------------------------------------------------- */
+
+  const menuToggle = document.querySelector(".menu-toggle");
+  const mobileNav = document.getElementById("mobile-nav");
+
+  if (menuToggle && mobileNav) {
+    function closeMenu() {
+      menuToggle.setAttribute("aria-expanded", "false");
+      menuToggle.setAttribute("aria-label", "Apri il menu");
+      mobileNav.hidden = true;
+    }
+
+    menuToggle.addEventListener("click", () => {
+      const isExpanded =
+        menuToggle.getAttribute("aria-expanded") === "true";
+
+      menuToggle.setAttribute(
+        "aria-expanded",
+        String(!isExpanded)
+      );
+
+      menuToggle.setAttribute(
+        "aria-label",
+        isExpanded ? "Apri il menu" : "Chiudi il menu"
+      );
+
+      mobileNav.hidden = isExpanded;
+    });
+
+    mobileNav.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", closeMenu);
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 700) {
+        closeMenu();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeMenu();
+      }
+    });
+  }
+
+  /* -------------------------------------------------------
+     ANNO AUTOMATICO NEL FOOTER
+     ------------------------------------------------------- */
+
+  const yearElement = document.getElementById("current-year");
+
+  if (yearElement) {
+    yearElement.textContent = new Date().getFullYear();
+  }
 }
-
-drone.position.sub(center);
-drone.scale.setScalar(3.2 / maxDimension);
-pivot.add(drone);
-
-camera.lookAt(0, 0, 0);
-
-console.log("DJI Avata 2 caricato correttamente.");
-
-},
-
-undefined,
-
-(error) => {
-console.error("Errore durante il caricamento del DJI Avata 2:", error);
-}
-);
-
-// Movimento interattivo del mouse
-container.addEventListener("pointermove", (event) => {
-const rect = container.getBoundingClientRect();
-
-if (!rect.width || !rect.height) return;
-
-const x = (event.clientX - rect.left) / rect.width;
-const y = (event.clientY - rect.top) / rect.height;
-
-targetRotationY = (x - 0.5) * 1.4 - 0.45;
-targetRotationX = (y - 0.5) * 0.5;
-});
-
-// Ridimensionamento
-function resize() {
-const width = container.clientWidth;
-const height = container.clientHeight;
-
-if (!width || !height) return;
-
-camera.aspect = width / height;
-camera.updateProjectionMatrix();
-renderer.setSize(width, height);
-}
-
-window.addEventListener("resize", resize);
-
-// Animazione
-function animate() {
-requestAnimationFrame(animate);
-
-if (drone) {
-pivot.rotation.y += (targetRotationY - pivot.rotation.y) * 0.035;
-pivot.rotation.x += (targetRotationX - pivot.rotation.x) * 0.035;
-pivot.position.y = Math.sin(performance.now() * 0.0008) * 0.06;
-}
-
-renderer.render(scene, camera);
-}
-
-animate();
