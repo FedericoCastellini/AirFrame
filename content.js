@@ -1,7 +1,7 @@
 
 window.AIRFRAME_CONTENT = {
   brand: {
-    name: "AIRFRAME",
+    name: "AIRFRAME TEST 123",
     tagline: "FPV FILMMAKING",
     description: "Immagini in movimento. Prospettive fuori dal comune."
   },
