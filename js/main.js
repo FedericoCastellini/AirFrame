@@ -53,7 +53,7 @@ let targetRotationY = -0.45;
 const loader = new GLTFLoader();
 
 loader.load(
-  "./assets/models/dji-avata-2.glb",
+  "./assets/models/dji-avata-2-optimized.glb"
 
   (gltf) => {
     drone = gltf.scene;
