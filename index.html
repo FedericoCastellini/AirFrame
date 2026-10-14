@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -8,11 +9,18 @@
   <link rel="icon" type="image/svg+xml" href="./assets/images/favicon.svg">
 
   <title>AIRFRAME — FPV Cinematography & Visual Production</title>
-  <meta name="description" content="AIRFRAME è uno studio creativo specializzato in riprese cinematografiche FPV, video immobiliari e produzioni audiovisive.">
+  <meta
+    name="description"
+    content="AIRFRAME è uno studio creativo specializzato in riprese cinematografiche FPV, video immobiliari e produzioni audiovisive."
+  >
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
 
   <link rel="stylesheet" href="./css/style.css">
 
@@ -47,7 +55,9 @@
         <a href="#contact">Contatti</a>
       </nav>
 
-      <a class="header-cta" href="#contact">Parliamo del tuo progetto</a>
+      <a class="header-cta" href="#contact">
+        Parliamo del tuo progetto
+      </a>
 
       <button
         class="menu-toggle"
@@ -60,7 +70,12 @@
         <span></span>
       </button>
 
-      <nav class="mobile-nav" id="mobile-nav" aria-label="Navigazione mobile" hidden>
+      <nav
+        class="mobile-nav"
+        id="mobile-nav"
+        aria-label="Navigazione mobile"
+        hidden
+      >
         <a href="#vision">Vision</a>
         <a href="#projects">Progetti</a>
         <a href="#services">Servizi</a>
@@ -77,6 +92,7 @@
     <section class="hero" id="home">
 
       <div class="hero-content">
+
         <span class="hero-kicker">Engineered for flight</span>
 
         <h1>
@@ -91,8 +107,13 @@
         </p>
 
         <div class="hero-actions">
-          <a class="button-primary" href="#projects">Scopri i nostri lavori</a>
-          <a class="button-secondary" href="#contact">Contattaci ↗</a>
+          <a class="button-primary" href="#projects">
+            Scopri i nostri lavori
+          </a>
+
+          <a class="button-secondary" href="#contact">
+            Contattaci ↗
+          </a>
         </div>
 
         <div class="hero-meta">
@@ -100,115 +121,224 @@
           <span>Real Estate</span>
           <span>Visual Production</span>
         </div>
+
       </div>
 
-      <div class="hero-visual" aria-label="Modello 3D di un drone FPV">
+      <div
+        class="hero-visual"
+        aria-label="Modello 3D di un drone FPV"
+      >
         <div id="model-container">
-          <canvas id="drone-canvas" aria-label="Modello 3D interattivo del drone"></canvas>
+          <canvas
+            id="drone-canvas"
+            aria-label="Modello 3D interattivo del drone"
+          ></canvas>
         </div>
       </div>
 
       <div class="model-caption">FPV / 3D EXPERIENCE</div>
-      <a class="hero-scroll" href="#vision">Scorri per esplorare</a>
+
+      <a class="hero-scroll" href="#vision">
+        Scorri per esplorare
+      </a>
 
     </section>
 
     <!-- VISION -->
     <section class="vision-section" id="vision">
+
       <div class="vision-inner">
 
         <span class="eyebrow">Il nostro approccio</span>
 
         <h2 class="vision-title">
           Non mostriamo soltanto un luogo.
-          <span>Lo facciamo vivere da una nuova prospettiva.</span>
+          <span>
+            Lo facciamo vivere da una nuova prospettiva.
+          </span>
         </h2>
 
         <div class="vision-bottom">
+
           <p>
             Attraverso riprese FPV e linguaggio cinematografico,
             trasformiamo idee, ambienti e progetti in immagini
             dinamiche, immersive e riconoscibili.
           </p>
 
-          <a class="button-secondary" href="#services">Esplora i servizi ↗</a>
+          <a class="button-secondary" href="#services">
+            Esplora i servizi ↗
+          </a>
+
         </div>
 
       </div>
+
     </section>
 
-    <!-- PROJECTS -->
+    <!-- PROJECTS / CINEMATIC VIDEO SHOWCASE -->
     <section class="projects-section section" id="projects">
+
       <div class="projects-inner">
 
         <div class="section-heading">
+
           <div>
             <span class="eyebrow">Selezione di progetti</span>
             <h2>I nostri lavori.</h2>
           </div>
 
           <p>
-            Ogni progetto ha una prospettiva unica.
-            Qui raccontiamo il nostro modo di interpretarla.
+            Tre prospettive, tre storie, un unico linguaggio visivo.
+            Scopri alcune delle nostre produzioni.
           </p>
+
         </div>
 
         <div class="projects-grid">
 
+          <!-- VIDEO 01 -->
           <article class="project-card">
-            <a class="project-image" href="#contact" aria-label="Progetto FPV cinematografico">
+
+            <div class="project-image">
+
+              <video
+                class="project-video"
+                autoplay
+                muted
+                loop
+                playsinline
+                webkit-playsinline
+                preload="metadata"
+                aria-label="Video cinematografico FPV"
+              >
+                <source
+                  src="./assets/videos/fpv-cinematography.mp4"
+                  type="video/mp4"
+                >
+                Il tuo browser non supporta la riproduzione video.
+              </video>
+
               <span class="project-number">01 / FPV</span>
-              <span class="project-image-label">FPV Cinematography</span>
-            </a>
+
+              <span class="project-image-label">
+                FPV Cinematography
+              </span>
+
+            </div>
 
             <div class="project-info">
+
               <div>
                 <h3>FPV Cinematography</h3>
                 <p>Movimento, immersione, prospettiva.</p>
               </div>
-              <span class="project-arrow">↗</span>
+
+              <span class="project-arrow" aria-hidden="true">↗</span>
+
             </div>
+
           </article>
 
+          <!-- VIDEO 02 -->
           <article class="project-card">
-            <a class="project-image" href="#contact" aria-label="Progetto video immobiliare">
+
+            <div class="project-image">
+
+              <video
+                class="project-video"
+                autoplay
+                muted
+                loop
+                playsinline
+                webkit-playsinline
+                preload="metadata"
+                aria-label="Video immobiliare cinematografico"
+              >
+                <source
+                  src="./assets/videos/real-estate.mp4"
+                  type="video/mp4"
+                >
+                Il tuo browser non supporta la riproduzione video.
+              </video>
+
               <span class="project-number">02 / REAL ESTATE</span>
-              <span class="project-image-label">Real Estate Films</span>
-            </a>
+
+              <span class="project-image-label">
+                Real Estate Films
+              </span>
+
+            </div>
 
             <div class="project-info">
+
               <div>
                 <h3>Real Estate</h3>
                 <p>Architettura raccontata in movimento.</p>
               </div>
-              <span class="project-arrow">↗</span>
+
+              <span class="project-arrow" aria-hidden="true">↗</span>
+
             </div>
+
           </article>
 
+          <!-- VIDEO 03 -->
           <article class="project-card">
-            <a class="project-image" href="#contact" aria-label="Progetto produzione commerciale">
+
+            <div class="project-image">
+
+              <video
+                class="project-video"
+                autoplay
+                muted
+                loop
+                playsinline
+                webkit-playsinline
+                preload="metadata"
+                aria-label="Video di produzione commerciale"
+              >
+                <source
+                  src="./assets/videos/commercial-production.mp4"
+                  type="video/mp4"
+                >
+                Il tuo browser non supporta la riproduzione video.
+              </video>
+
               <span class="project-number">03 / COMMERCIAL</span>
-              <span class="project-image-label">Commercial Production</span>
-            </a>
+
+              <span class="project-image-label">
+                Commercial Production
+              </span>
+
+            </div>
 
             <div class="project-info">
+
               <div>
                 <h3>Commercial Production</h3>
                 <p>Immagini progettate per lasciare il segno.</p>
               </div>
-              <span class="project-arrow">↗</span>
+
+              <span class="project-arrow" aria-hidden="true">↗</span>
+
             </div>
+
           </article>
 
         </div>
+
       </div>
+
     </section>
 
     <!-- SERVICES -->
     <section class="services-section section" id="services">
+
       <div class="services-inner">
 
         <div class="section-heading">
+
           <div>
             <span class="eyebrow">Cosa facciamo</span>
             <h2>Idee in movimento.</h2>
@@ -218,13 +348,16 @@
             Dalla prima idea alla produzione finale,
             costruiamo contenuti visivi pensati per ogni esigenza.
           </p>
+
         </div>
 
         <div class="services-grid">
 
           <article class="service-card">
             <span class="service-number">01 — FPV</span>
+
             <h3>Riprese cinematografiche FPV</h3>
+
             <p>
               Voli dinamici e traiettorie immersive per raccontare
               ambienti, spazi ed esperienze da prospettive inedite.
@@ -233,7 +366,9 @@
 
           <article class="service-card">
             <span class="service-number">02 — REAL ESTATE</span>
+
             <h3>Video immobiliari</h3>
+
             <p>
               Produzioni per immobili, strutture ricettive e
               architettura, valorizzando spazi e dettagli.
@@ -242,7 +377,9 @@
 
           <article class="service-card">
             <span class="service-number">03 — COMMERCIAL</span>
+
             <h3>Video commerciali</h3>
+
             <p>
               Contenuti visivi per brand, aziende e attività
               che vogliono comunicare attraverso immagini curate.
@@ -251,7 +388,9 @@
 
           <article class="service-card">
             <span class="service-number">04 — PRODUCTION</span>
+
             <h3>Produzione audiovisiva</h3>
+
             <p>
               Dalla pianificazione alle riprese, fino al montaggio
               e alla finalizzazione del contenuto.
@@ -259,20 +398,27 @@
           </article>
 
         </div>
-      </div>
-    </section>
-<!-- STUDIO / FOUNDERS -->
-<section class="studio-section" id="studio">
 
-  <div class="studio-photo">
-    <img
-      src="./assets/img/founders.jpg"
-      alt="I due fondatori di AIRFRAME"
-      loading="lazy"
-      decoding="async"
-    >
-  </div>
+      </div>
+
+    </section>
+
+    <!-- STUDIO / FOUNDERS -->
+    <section class="studio-section" id="studio">
+
+      <div class="studio-photo">
+
+        <img
+          src="./assets/img/founders.jpg"
+          alt="I due fondatori di AIRFRAME"
+          loading="lazy"
+          decoding="async"
+        >
+
+      </div>
+
       <div class="studio-content">
+
         <span class="eyebrow">Dietro AIRFRAME</span>
 
         <h2>
@@ -295,67 +441,78 @@
         <p class="studio-signature">
           Questo è il nostro modo di raccontare.
         </p>
+
       </div>
 
     </section>
-<!-- CONTACT -->
-<section class="contact-section" id="contact">
-  <div class="contact-inner">
 
-    <div class="contact-info">
-      <span class="eyebrow">Il prossimo progetto</span>
+    <!-- CONTACT -->
+    <section class="contact-section" id="contact">
 
-      <h2>
-        Diamo forma<br>
-        alla <span>tua visione.</span>
-      </h2>
+      <div class="contact-inner">
 
-      <p class="contact-description">
-        Hai un progetto in mente? Raccontaci cosa vuoi realizzare.
-        Troveremo insieme la prospettiva giusta.
-      </p>
-    </div>
+        <div class="contact-info">
 
-    <div class="contact-links">
+          <span class="eyebrow">Il prossimo progetto</span>
 
-      <span class="contact-label">PARLIAMONE SU WHATSAPP</span>
+          <h2>
+            Diamo forma<br>
+            alla <span>tua visione.</span>
+          </h2>
 
-      <a href="https://wa.me/393518869637"
-         target="_blank"
-         rel="noopener noreferrer"
-         aria-label="Contatta AIRFRAME su WhatsApp al 351 886 9637">
-        <span class="whatsapp-icon">↗</span>
-        <span>351 886 9637</span>
-        <span class="contact-arrow">↗</span>
-      </a>
+          <p class="contact-description">
+            Hai un progetto in mente? Raccontaci cosa vuoi realizzare.
+            Troveremo insieme la prospettiva giusta.
+          </p>
 
-      <a href="https://wa.me/393334256465"
-         target="_blank"
-         rel="noopener noreferrer"
-         aria-label="Contatta AIRFRAME su WhatsApp al 333 425 6465">
-        <span class="whatsapp-icon">↗</span>
-        <span>333 425 6465</span>
-        <span class="contact-arrow">↗</span>
-      </a>
+        </div>
 
-    </div>
+        <div class="contact-links">
 
-  </div>
-</section>
+          <span class="contact-label">
+            PARLIAMONE SU WHATSAPP
+          </span>
+
+          <a
+            href="https://wa.me/393518869637"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Contatta AIRFRAME su WhatsApp al 351 886 9637"
+          >
+            <span class="whatsapp-icon" aria-hidden="true">↗</span>
+            <span>351 886 9637</span>
+            <span class="contact-arrow" aria-hidden="true">↗</span>
+          </a>
+
+          <a
+            href="https://wa.me/393334256465"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Contatta AIRFRAME su WhatsApp al 333 425 6465"
+          >
+            <span class="whatsapp-icon" aria-hidden="true">↗</span>
+            <span>333 425 6465</span>
+            <span class="contact-arrow" aria-hidden="true">↗</span>
+          </a>
+
+        </div>
 
       </div>
+
     </section>
 
   </main>
 
   <!-- FOOTER -->
   <footer class="site-footer">
+
     <div class="footer-inner">
 
       <a class="footer-brand" href="#home">AIRFRAME</a>
 
       <span class="footer-copy">
-        © <span id="current-year"></span> AIRFRAME. Tutti i diritti riservati.
+        © <span id="current-year"></span> AIRFRAME.
+        Tutti i diritti riservati.
       </span>
 
       <div class="footer-links">
@@ -365,6 +522,7 @@
       </div>
 
     </div>
+
   </footer>
 
 </body>
