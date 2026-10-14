@@ -124,7 +124,7 @@ loader.load(
         }
 
         drone.position.sub(center);
-        drone.scale.setScalar(3.2 / maxDimension);
+        drone.scale.setScalar(2.5 / maxDimension);
 
         pivot.add(drone);
         pivot.rotation.set(0, -0.45, 0);
