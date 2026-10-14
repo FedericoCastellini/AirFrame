@@ -1,229 +1,268 @@
 
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js';
 
-const container = document.querySelector('#drone-stage');
+const container = document.querySelector('#model-container');
+const status = document.querySelector('#status');
+const statusDot = document.querySelector('#status-dot');
+const loaderElement = document.querySelector('#loader');
 
-if (container) {
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#08090b');
+const scene = new THREE.Scene();
 
-  const camera = new THREE.PerspectiveCamera(
-    35,
-    container.clientWidth / container.clientHeight,
-    0.1,
-    100
-  );
+const camera = new THREE.PerspectiveCamera(34, 1, 0.01, 1000);
+camera.position.set(0, 0.5, 5);
 
-  camera.position.set(0, 1.1, 7.5);
+const renderer = new THREE.WebGLRenderer({
+  antialias: true,
+  alpha: true,
+  powerPreference: 'high-performance'
+});
 
-  const renderer = new THREE.WebGLRenderer({
-    antialias: true,
-    alpha: false,
-    powerPreference: 'high-performance'
-  });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.25;
 
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
+container.appendChild(renderer.domElement);
 
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+// Illuminazione ambientale.
+scene.add(new THREE.HemisphereLight(0xe4edff, 0x17131a, 2.1));
 
-  container.appendChild(renderer.domElement);
+// Key light: luce principale morbida.
+const keyLight = new THREE.DirectionalLight(0xfff2df, 4);
+keyLight.position.set(3, 5, 5);
+scene.add(keyLight);
 
-  // Illuminazione ambientale morbida.
-  scene.add(new THREE.HemisphereLight(
-    0xcbd9ff,
-    0x101015,
-    2.0
-  ));
+// Rim light: profilo freddo del drone.
+const rimLight = new THREE.DirectionalLight(0x83b9ff, 5);
+rimLight.position.set(-5, 2, -4);
+scene.add(rimLight);
 
-  // Luce principale: effetto studio cinematografico.
-  const keyLight = new THREE.DirectionalLight(0xffffff, 4);
-  keyLight.position.set(3, 5, 5);
-  scene.add(keyLight);
+// Fill light laterale.
+const fillLight = new THREE.PointLight(0xffd8b0, 35, 15);
+fillLight.position.set(3, -1, 3);
+scene.add(fillLight);
 
-  // Luce fredda laterale per delineare il profilo.
-  const rimLight = new THREE.DirectionalLight(0x82baff, 5);
-  rimLight.position.set(-5, 2, -3);
-  scene.add(rimLight);
+// Luce dall'alto.
+const topLight = new THREE.SpotLight(
+  0xffffff,
+  65,
+  20,
+  Math.PI / 5,
+  0.7,
+  1.5
+);
 
-  // Riflesso caldo sul lato opposto.
-  const warmLight = new THREE.PointLight(0xffd6ad, 18, 12);
-  warmLight.position.set(4, 0, -3);
-  scene.add(warmLight);
+topLight.position.set(0, 6, 2);
+topLight.target.position.set(0, 0, 0);
+scene.add(topLight, topLight.target);
 
-  // Fondo scenografico: alone luminoso discreto.
-  const halo = new THREE.Mesh(
-    new THREE.CircleGeometry(2.4, 64),
-    new THREE.MeshBasicMaterial({
-      color: '#161c25',
-      transparent: true,
-      opacity: 0.85,
-      depthWrite: false
-    })
-  );
+const dronePivot = new THREE.Group();
+scene.add(dronePivot);
 
-  halo.position.set(0, 0, -2.2);
-  scene.add(halo);
+let drone = null;
+let mixer = null;
+let rotors = [];
+let modelScale = 1;
 
-  const droneGroup = new THREE.Group();
-  scene.add(droneGroup);
+let pointerX = 0;
+let pointerY = 0;
+let targetX = 0;
+let targetY = 0;
 
-  let mixer = null;
-  let rotorParts = [];
-  let modelReady = false;
+const clock = new THREE.Clock();
 
-  const loader = new GLTFLoader();
+const loader = new GLTFLoader();
 
-  loader.load(
-    'assets/models/dji-avata-2.glb',
+status.textContent = 'CARICAMENTO MODELLO';
 
-    (gltf) => {
-      const model = gltf.scene;
+loader.load(
+  './assets/models/dji-avata-2.glb',
 
-      // Centra il modello e lo adatta alla scena.
-      const bounds = new THREE.Box3().setFromObject(model);
-      const size = bounds.getSize(new THREE.Vector3());
-      const center = bounds.getCenter(new THREE.Vector3());
-      const maxDimension = Math.max(size.x, size.y, size.z);
+  (gltf) => {
+    drone = gltf.scene;
 
-      model.position.sub(center);
-      model.scale.setScalar(3.1 / maxDimension);
+    // Calcola le dimensioni del modello.
+    const bounds = new THREE.Box3().setFromObject(drone);
+    const size = bounds.getSize(new THREE.Vector3());
+    const center = bounds.getCenter(new THREE.Vector3());
+    const maxDimension = Math.max(size.x, size.y, size.z);
 
-      // Migliora l'aspetto dei materiali.
-      model.traverse((object) => {
-        if (!object.isMesh) return;
+    if (!Number.isFinite(maxDimension) || maxDimension <= 0) {
+      throw new Error('Il modello non ha dimensioni valide.');
+    }
 
-        object.castShadow = true;
-        object.receiveShadow = true;
+    // Porta il modello a una dimensione standard.
+    modelScale = 2.8 / maxDimension;
+    drone.scale.setScalar(modelScale);
 
-        if (object.material) {
-          object.material = object.material.clone();
+    // Centra il modello dopo la scalatura.
+    drone.position.set(
+      -center.x * modelScale,
+      -center.y * modelScale,
+      -center.z * modelScale
+    );
 
-          if ('envMapIntensity' in object.material) {
-            object.material.envMapIntensity = 1.2;
-          }
+    drone.traverse((object) => {
+      if (!object.isMesh) return;
 
-          object.material.needsUpdate = true;
+      object.castShadow = true;
+      object.receiveShadow = true;
+
+      if (object.material) {
+        const materials = Array.isArray(object.material)
+          ? object.material
+          : [object.material];
+
+        for (const material of materials) {
+          // Mantiene i materiali originali del GLB.
+          material.needsUpdate = true;
         }
-
-        // Individua eventuali eliche in base ai nomi del modello.
-        if (
-          /propeller|rotor|elica|blade/i.test(object.name) &&
-          object.parent
-        ) {
-          rotorParts.push(object);
-        }
-      });
-
-      droneGroup.add(model);
-
-      // Riproduce eventuali animazioni già presenti nel GLB.
-      if (gltf.animations.length) {
-        mixer = new THREE.AnimationMixer(model);
-
-        gltf.animations.forEach((clip) => {
-          mixer.clipAction(clip).play();
-        });
       }
 
-      modelReady = true;
+      // Cerca oggetti che potrebbero essere eliche.
+      if (/prop|rotor|elica|blade|hélice/i.test(object.name)) {
+        rotors.push(object);
+      }
+    });
 
-      // Inquadra automaticamente il drone.
-      camera.position.set(0, 0.8, 5.6);
-      camera.lookAt(0, 0, 0);
-    },
+    dronePivot.add(drone);
 
-    undefined,
+    if (gltf.animations.length > 0) {
+      mixer = new THREE.AnimationMixer(drone);
 
-    (error) => {
-      console.error('Impossibile caricare il modello 3D:', error);
-      container.dataset.error = 'true';
-    }
-  );
-
-  // Interazione mouse.
-  let pointerX = 0;
-  let pointerY = 0;
-  let targetX = 0;
-  let targetY = 0;
-
-  container.addEventListener('pointermove', (event) => {
-    const rect = container.getBoundingClientRect();
-
-    pointerX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    pointerY = ((event.clientY - rect.top) / rect.height) * 2 - 1;
-
-    targetY = pointerX * 0.38;
-    targetX = pointerY * 0.16;
-  });
-
-  container.addEventListener('pointerleave', () => {
-    targetX = 0;
-    targetY = 0;
-  });
-
-  // Loop di animazione.
-  const clock = new THREE.Clock();
-
-  function animate() {
-    requestAnimationFrame(animate);
-
-    const delta = Math.min(clock.getDelta(), 0.05);
-    const elapsed = clock.elapsedTime;
-
-    if (mixer) {
-      mixer.update(delta);
-    }
-
-    if (modelReady) {
-      // Movimento sospeso, lento e cinematografico.
-      droneGroup.position.y = Math.sin(elapsed * 0.8) * 0.045;
-
-      // Rotazione naturale e risposta al mouse.
-      droneGroup.rotation.y +=
-        (targetY + Math.sin(elapsed * 0.25) * 0.04 -
-          droneGroup.rotation.y) * 0.035;
-
-      droneGroup.rotation.x +=
-        (targetX - droneGroup.rotation.x) * 0.035;
-
-      // Animazione eliche.
-      // Funziona soltanto se il GLB contiene oggetti separati
-      // per le eliche, identificabili dai loro nomi.
-      rotorParts.forEach((rotor, index) => {
-        rotor.rotation.y += delta * 45 * (index % 2 ? -1 : 1);
+      gltf.animations.forEach((clip) => {
+        mixer.clipAction(clip).play();
       });
     }
 
-    renderer.render(scene, camera);
-  }
+    // Inquadra il modello usando le sue dimensioni.
+    const sphere = new THREE.Box3()
+      .setFromObject(drone)
+      .getBoundingSphere(new THREE.Sphere());
 
-  animate();
+    const radius = Math.max(sphere.radius, 0.1);
+    const fov = THREE.MathUtils.degToRad(camera.fov);
 
-  // Adattamento alla dimensione del contenitore.
-  const resizeObserver = new ResizeObserver(() => {
-    const width = container.clientWidth;
-    const height = container.clientHeight;
+    camera.position.set(
+      0,
+      radius * 0.15,
+      Math.max(radius / Math.sin(fov / 2) * 0.82, 2.5)
+    );
 
-    if (!width || !height) return;
-
-    camera.aspect = width / height;
+    camera.near = Math.max(radius / 1000, 0.01);
+    camera.far = Math.max(radius * 100, 100);
+    camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
 
-    renderer.setSize(width, height);
-  });
+    loaderElement.style.display = 'none';
 
-  resizeObserver.observe(container);
+    status.textContent = 'MODELLO 3D ONLINE';
+    statusDot.classList.add('ready');
 
-  // Evita lavoro grafico quando la scena è fuori schermo.
-  const visibilityObserver = new IntersectionObserver(([entry]) => {
-    container.dataset.visible = String(entry.isIntersecting);
-  });
+    console.info('Modello caricato:', gltf);
+    console.info(
+      'Possibili eliche trovate:',
+      rotors.map((rotor) => rotor.name)
+    );
+  },
 
-  visibilityObserver.observe(container);
+  (progress) => {
+    if (progress.total > 0) {
+      const percentage = Math.round(
+        (progress.loaded / progress.total) * 100
+      );
+
+      status.textContent = `CARICAMENTO ${percentage}%`;
+    }
+  },
+
+  (error) => {
+    console.error('Errore caricamento GLB:', error);
+
+    status.textContent = 'ERRORE DI CARICAMENTO';
+    statusDot.classList.add('error');
+
+    loaderElement.classList.add('error');
+    loaderElement.querySelector('p').textContent =
+      'CONTROLLA IL FILE GLB E IL PERCORSO';
+  }
+);
+
+// Il mouse controlla delicatamente la prospettiva.
+container.addEventListener('pointermove', (event) => {
+  const rect = container.getBoundingClientRect();
+
+  pointerX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointerY = ((event.clientY - rect.top) / rect.height) * 2 - 1;
+
+  targetY = pointerX * 0.4;
+  targetX = pointerY * 0.18;
+});
+
+container.addEventListener('pointerleave', () => {
+  targetX = 0;
+  targetY = 0;
+});
+
+// Dimensioni responsive.
+function resize() {
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+
+  if (!width || !height) return;
+
+  renderer.setSize(width, height, false);
+
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
 }
+
+const resizeObserver = new ResizeObserver(resize);
+resizeObserver.observe(container);
+resize();
+
+// Animazione principale.
+let frameId = 0;
+
+function animate() {
+  frameId = requestAnimationFrame(animate);
+
+  const delta = Math.min(clock.getDelta(), 0.05);
+  const elapsed = clock.elapsedTime;
+
+  if (mixer) mixer.update(delta);
+
+  if (drone) {
+    // Galleggiamento leggero.
+    dronePivot.position.y = Math.sin(elapsed * 0.8) * 0.035;
+
+    // Rotazione cinematografica lenta.
+    const idleRotation = Math.sin(elapsed * 0.25) * 0.045;
+
+    dronePivot.rotation.y +=
+      (targetY + idleRotation - dronePivot.rotation.y) * 0.035;
+
+    dronePivot.rotation.x +=
+      (targetX - dronePivot.rotation.x) * 0.035;
+
+    // Rotazione di prova delle eliche individuate.
+    // L'asse dovrà essere verificato sul modello reale.
+    rotors.forEach((rotor, index) => {
+      rotor.rotation.y += delta * 45 * (index % 2 ? -1 : 1);
+    });
+  }
+
+  renderer.render(scene, camera);
+}
+
+animate();
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    cancelAnimationFrame(frameId);
+  } else {
+    clock.getDelta();
+    animate();
+  }
+});

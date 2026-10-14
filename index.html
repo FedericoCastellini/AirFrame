@@ -1,141 +1,51 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>AIRFRAME — Video FPV per il settore immobiliare1234</title>
-  <meta name="description" content="AIRFRAME realizza video cinematografici con droni FPV per ville, case e proprietà immobiliari.">
-  <meta name="theme-color" content="#000000">
-
-  <!-- Anteprima quando il link viene condiviso (WhatsApp, social...) -->
-  <meta property="og:title" content="AIRFRAME — Video FPV per il settore immobiliare">
-  <meta property="og:description" content="Video cinematografici con droni FPV per ville, case e proprietà immobiliari.">
-  <meta property="og:image" content="assets/img/hero-poster.jpg">
-  <meta property="og:type" content="website">
-
-  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/img/hero-poster.jpg" as="image">
-  <link rel="stylesheet" href="css/style.css">
-
-  <script src="content.js" defer></script>
-  <script src="js/main.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08090b">
+  <title>AIRFRAME — 3D Experience</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./drone.js"></script>
 </head>
 <body>
-  <a class="skip" href="#contenuto">Vai al contenuto</a>
-
-  <!-- INTESTAZIONE -->
-  <header class="topbar" data-topbar>
-    <a class="brand" href="#top" aria-label="AIRFRAME, torna all'inizio" data-logo></a>
-    <a class="topbar__link" href="#contatti">Contattaci</a>
-  </header>
-
-  <main id="contenuto">
-
-    <!-- APERTURA -->
-    <section class="hero" id="top" aria-labelledby="hero-title">
-      <div class="hero__media">
-        <video class="hero__video" data-hero-video muted loop playsinline preload="auto" aria-hidden="true"></video>
-      </div>
-      <div class="hero__shade" aria-hidden="true"></div>
-
-      <div class="hero__frame" aria-hidden="true">
-        <span class="corner corner--tl"></span><span class="corner corner--tr"></span>
-        <span class="corner corner--bl"></span><span class="corner corner--br"></span>
-      </div>
-
-      <div class="hero__content wrap">
-        <p class="hero__logo" data-hero-logo></p>
-        <h1 class="hero__title" id="hero-title" data-text="hero.title"></h1>
-        <p class="hero__sub" data-text="hero.subtitle"></p>
-        <a class="hero__cta" href="#lavori"><span data-text="hero.cta"></span></a>
-      </div>
-
-      <button class="hero__toggle" type="button" data-hero-toggle aria-label="Metti in pausa il video">
-        <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z"/></svg>
-        <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-      </button>
-    </section>
-
-    <!-- CHI SIAMO -->
-    <section class="about wrap" id="chi-siamo" aria-labelledby="about-title">
-      <figure class="about__photo reveal">
-        <img data-about-photo width="1200" height="1500" loading="lazy" decoding="async" alt="">
-      </figure>
-      <div class="about__text">
-        <h2 class="h2" id="about-title" data-text="about.title"></h2>
-        <div class="about__body" data-about-body></div>
-        <p class="about__sign" data-text="about.signature"></p>
-      </div>
-    </section>
-
-    <!-- I NOSTRI LAVORI -->
-    <section class="works" id="lavori" aria-labelledby="works-title">
-      <div class="wrap">
-        <header class="works__head">
-          <h2 class="h2" id="works-title" data-text="works.title"></h2>
-          <p class="works__intro" data-text="works.intro"></p>
-        </header>
-        <ul class="works__grid" data-works></ul>
-      </div>
-    </section>
-
-    <!-- CONTATTI -->
-    <section class="contact" id="contatti" aria-labelledby="contact-title">
-      <div class="wrap contact__inner">
-        <div class="contact__intro">
-          <h2 class="h2 h2--large" id="contact-title" data-text="contact.title"></h2>
-          <p class="contact__text" data-text="contact.text"></p>
-          <ul class="contact__direct" data-direct></ul>
-          <ul class="social" data-social aria-label="Profili social"></ul>
-        </div>
-
-        <form class="form" data-form novalidate>
-          <div class="field">
-            <label for="f-name">Nome</label>
-            <input id="f-name" name="name" type="text" autocomplete="name" required>
-            <p class="field__error" id="f-name-err" aria-live="polite"></p>
-          </div>
-          <div class="field">
-            <label for="f-email">Email</label>
-            <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required>
-            <p class="field__error" id="f-email-err" aria-live="polite"></p>
-          </div>
-          <div class="field">
-            <label for="f-message">Messaggio</label>
-            <textarea id="f-message" name="message" rows="5" required placeholder="Tipo di immobile, località, tempistiche…"></textarea>
-            <p class="field__error" id="f-message-err" aria-live="polite"></p>
-          </div>
-          <!-- Campo anti-spam: invisibile alle persone, i bot lo compilano -->
-          <input class="hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
-
-          <div class="form__foot">
-            <button class="btn" type="submit" data-submit>Invia messaggio</button>
-            <p class="form__status" data-status role="status" aria-live="polite"></p>
-          </div>
-        </form>
-      </div>
-
-      <footer class="footer wrap">
-        <p>© <span data-year></span> <span data-text="footer"></span></p>
-        <a href="#top">Torna su</a>
-      </footer>
-    </section>
-  </main>
-
-  <!-- PLAYER VIDEO DEI LAVORI -->
-  <dialog class="player" data-player aria-label="Riproduzione video">
-    <div class="player__bar">
-      <p class="player__title" data-player-title></p>
-      <button class="player__close" type="button" data-player-close aria-label="Chiudi video">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
-      </button>
+  <main class="experience">
+    <div class="topbar">
+      <a class="logo" href="./index.html">AIRFRAME<span>®</span></a>
+      <span class="topbar-label">FPV / 3D EXPERIENCE</span>
     </div>
-    <div class="player__stage" data-player-stage></div>
-  </dialog>
 
-  <noscript>
-    <p class="noscript">Per vedere i video e i contenuti del sito attiva JavaScript nel browser.</p>
-  </noscript>
+    <div class="scene" id="scene">
+      <div class="scene-glow"></div>
+      <div class="scene-grid"></div>
+
+      <div class="scene-heading">
+        <span class="eyebrow">ENGINEERED FOR FLIGHT</span>
+        <h1>Beyond<br>the frame<span>.</span></h1>
+        <p>Precision in motion.</p>
+      </div>
+
+      <div class="model-container" id="model-container">
+        <div class="loader" id="loader">
+          <span class="loader-ring"></span>
+          <p>INITIALIZING 3D EXPERIENCE</p>
+        </div>
+      </div>
+
+      <div class="scene-bottom">
+        <span class="status">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status">CARICAMENTO MODELLO</span>
+        </span>
+        <span class="interaction-hint">MUOVI IL MOUSE PER ESPLORARE</span>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <span>DJI AVATA 2 — 3D TEST</span>
+      <span>DESIGNED BY AIRFRAME</span>
+    </footer>
+  </main>
 </body>
 </html>
