@@ -1,10 +1,23 @@
+```html
 <!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#08090b">
-  <title>AIRFRAME — Drone 3D</title>
+
+  <meta name="description" content="AIRFRAME è uno studio creativo specializzato in riprese cinematografiche FPV, video immobiliari e produzioni audiovisive.">
+  <meta name="keywords" content="AIRFRAME, FPV, video cinematografici, drone, real estate, produzione audiovisiva">
+  <meta property="og:title" content="AIRFRAME — Beyond the Frame">
+  <meta property="og:description" content="Immagini che trasformano il modo di vedere il mondo.">
+  <meta property="og:type" content="website">
+
+  <title>AIRFRAME® — Beyond the Frame</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="./css/style.css">
 
   <script type="importmap">
@@ -15,30 +28,460 @@
       }
     }
   </script>
+
   <script type="module" src="./js/main.js"></script>
 </head>
+
 <body>
-  <header>
-    <a href="./index.html">AIRFRAME<span>®</span></a>
-    <span>FPV / 3D EXPERIENCE</span>
-  </header>
+  <div class="site-shell">
 
-  <main>
-    <div class="intro">
-      <p>ENGINEERED FOR FLIGHT</p>
-      <h1>Beyond<br>the frame<span>.</span></h1>
-      <p>Precision in motion.</p>
-    </div>
+    <header class="site-header" id="top">
+      <a class="brand" href="#top" aria-label="AIRFRAME, torna all'inizio">
+        AIRFRAME<span class="brand-mark">®</span>
+      </a>
 
-    <div id="model-container">
-      <div id="status">CARICAMENTO MODELLO 3D...</div>
-    </div>
+      <nav class="desktop-nav" aria-label="Navigazione principale">
+        <a href="#vision">Visione</a>
+        <a href="#projects">Progetti</a>
+        <a href="#services">Servizi</a>
+        <a href="#studio">Studio</a>
+      </nav>
 
-    <footer>
-      <span id="model-status">INITIALIZING</span>
-      <span>DJI AVATA 2</span>
+      <a class="header-contact" href="#contact">
+        <span>Parliamo del tuo progetto</span>
+        <span class="arrow-icon" aria-hidden="true">↗</span>
+      </a>
+
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-label="Apri il menu"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+      >
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Navigazione mobile" hidden>
+      <a href="#vision">Visione</a>
+      <a href="#projects">Progetti</a>
+      <a href="#services">Servizi</a>
+      <a href="#studio">Studio</a>
+      <a href="#contact">Contatti</a>
+    </nav>
+
+    <main>
+
+      <!-- HERO -->
+      <section class="hero" id="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span class="eyebrow-line"></span>
+            STUDIO CREATIVO · FPV · FILM
+          </p>
+
+          <h1>
+            Beyond<br>
+            the frame<span class="accent-dot">.</span>
+          </h1>
+
+          <div class="hero-bottom">
+            <p class="hero-description">
+              Progettiamo immagini capaci di portarti
+              dove lo sguardo, da solo, non può arrivare.
+            </p>
+
+            <a class="text-link" href="#projects">
+              <span>Esplora i nostri lavori</span>
+              <span class="arrow-icon" aria-hidden="true">↓</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-label="Modello tridimensionale interattivo del drone DJI Avata 2">
+          <div class="hero-grid" aria-hidden="true"></div>
+          <div class="hero-glow" aria-hidden="true"></div>
+
+          <div class="hero-orbit orbit-one" aria-hidden="true"></div>
+          <div class="hero-orbit orbit-two" aria-hidden="true"></div>
+
+          <div id="model-container">
+            <canvas id="drone-canvas" aria-label="Modello 3D interattivo del drone"></canvas>
+          </div>
+
+          <div class="drone-caption">
+            <span class="caption-index">01 / OBJECT STUDY</span>
+            <span class="caption-name">DJI AVATA 2</span>
+          </div>
+
+          <div class="hero-side-label" aria-hidden="true">
+            BUILT TO MOVE
+          </div>
+        </div>
+
+        <div class="hero-meta">
+          <span>INDEPENDENT CREATIVE STUDIO</span>
+          <span>ITALY · AVAILABLE WORLDWIDE</span>
+          <a href="#vision" aria-label="Scopri AIRFRAME">SCROLL TO EXPLORE ↓</a>
+        </div>
+      </section>
+
+      <!-- VISIONE -->
+      <section class="vision section-pad" id="vision">
+        <div class="section-heading">
+          <p class="eyebrow">
+            <span class="eyebrow-line"></span>
+            01 — LA NOSTRA VISIONE
+          </p>
+
+          <span class="section-index">A DIFFERENT PERSPECTIVE</span>
+        </div>
+
+        <div class="vision-content">
+          <h2>
+            Non filmiamo soltanto ciò che esiste.
+            <span>Creiamo nuovi modi di vederlo.</span>
+          </h2>
+
+          <div class="vision-details">
+            <p>
+              AIRFRAME nasce dall'incontro tra tecnologia, creatività
+              e passione per le immagini in movimento. Uniamo riprese
+              FPV, ricerca visiva e produzione cinematografica per
+              raccontare luoghi, persone e idee con una prospettiva
+              fuori dall'ordinario.
+            </p>
+
+            <a class="text-link" href="#services">
+              <span>Scopri cosa facciamo</span>
+              <span class="arrow-icon" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="vision-strip" aria-hidden="true">
+          <span>PRECISION</span>
+          <span class="strip-symbol">✳</span>
+          <span>MOTION</span>
+          <span class="strip-symbol">✳</span>
+          <span>VISION</span>
+          <span class="strip-symbol">✳</span>
+          <span>CREATIVITY</span>
+        </div>
+      </section>
+
+      <!-- PORTFOLIO -->
+      <section class="projects section-pad" id="projects">
+        <div class="section-heading">
+          <p class="eyebrow">
+            <span class="eyebrow-line"></span>
+            02 — SELECTED WORK
+          </p>
+
+          <span class="section-index">OUR VISUAL WORLD</span>
+        </div>
+
+        <div class="projects-heading">
+          <h2>Immagini che<br>lasciano il segno<span class="accent-dot">.</span></h2>
+          <p>
+            Ogni progetto è un'occasione per esplorare una prospettiva
+            diversa e trasformare un'idea in un'esperienza visiva.
+          </p>
+        </div>
+
+        <div class="project-grid">
+
+          <article class="project-card project-large">
+            <a class="project-media media-fpv" href="#contact" aria-label="Richiedi un progetto di riprese FPV">
+              <div class="media-placeholder placeholder-fpv">
+                <span class="placeholder-cross cross-one">+</span>
+                <span class="placeholder-cross cross-two">+</span>
+                <span class="placeholder-word">FPV / IMMERSIVE</span>
+                <span class="placeholder-number">01</span>
+              </div>
+
+              <span class="project-play" aria-hidden="true">↗</span>
+            </a>
+
+            <div class="project-info">
+              <div>
+                <h3>Beyond Perspective</h3>
+                <p>Riprese FPV · Cinematic film</p>
+              </div>
+              <span class="project-year">PROJECT 01</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <a class="project-media media-realestate" href="#contact" aria-label="Richiedi un video immobiliare">
+              <div class="media-placeholder placeholder-realestate">
+                <span class="placeholder-cross cross-one">+</span>
+                <span class="placeholder-cross cross-two">+</span>
+                <span class="placeholder-word">ARCHITECTURE / SPACE</span>
+                <span class="placeholder-number">02</span>
+              </div>
+
+              <span class="project-play" aria-hidden="true">↗</span>
+            </a>
+
+            <div class="project-info">
+              <div>
+                <h3>Spaces in Motion</h3>
+                <p>Real estate · Architecture</p>
+              </div>
+              <span class="project-year">PROJECT 02</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <a class="project-media media-commercial" href="#contact" aria-label="Richiedi una produzione commerciale">
+              <div class="media-placeholder placeholder-commercial">
+                <span class="placeholder-cross cross-one">+</span>
+                <span class="placeholder-cross cross-two">+</span>
+                <span class="placeholder-word">BRAND / FILM</span>
+                <span class="placeholder-number">03</span>
+              </div>
+
+              <span class="project-play" aria-hidden="true">↗</span>
+            </a>
+
+            <div class="project-info">
+              <div>
+                <h3>Designed to Move</h3>
+                <p>Commercial · Brand content</p>
+              </div>
+              <span class="project-year">PROJECT 03</span>
+            </div>
+          </article>
+
+        </div>
+
+        <p class="projects-note">
+          I contenuti mostrati sono segnaposto da sostituire con i nostri lavori reali.
+        </p>
+      </section>
+
+      <!-- SERVIZI -->
+      <section class="services section-pad" id="services">
+        <div class="section-heading">
+          <p class="eyebrow">
+            <span class="eyebrow-line"></span>
+            03 — COSA FACCIAMO
+          </p>
+
+          <span class="section-index">FROM CONCEPT TO FRAME</span>
+        </div>
+
+        <div class="services-intro">
+          <h2>Creatività in movimento.<br><span>Precisione in ogni frame.</span></h2>
+
+          <p>
+            Dalla prima idea alla consegna finale, costruiamo produzioni
+            audiovisive su misura per raccontare ogni progetto nel modo giusto.
+          </p>
+        </div>
+
+        <div class="service-list">
+
+          <article class="service-item">
+            <span class="service-number">01</span>
+            <div class="service-main">
+              <h3>FPV Cinematography</h3>
+              <p>
+                Riprese dinamiche e immersive per attraversare spazi,
+                seguire l'azione e creare sequenze impossibili da ottenere
+                con prospettive tradizionali.
+              </p>
+            </div>
+            <span class="service-arrow" aria-hidden="true">↗</span>
+          </article>
+
+          <article class="service-item">
+            <span class="service-number">02</span>
+            <div class="service-main">
+              <h3>Real Estate & Architecture</h3>
+              <p>
+                Video immobiliari e architettonici che valorizzano
+                ambienti, proporzioni, dettagli e identità degli spazi.
+              </p>
+            </div>
+            <span class="service-arrow" aria-hidden="true">↗</span>
+          </article>
+
+          <article class="service-item">
+            <span class="service-number">03</span>
+            <div class="service-main">
+              <h3>Audiovisual Production</h3>
+              <p>
+                Produzioni video curate in ogni fase: pianificazione,
+                riprese, montaggio e finalizzazione del contenuto.
+              </p>
+            </div>
+            <span class="service-arrow" aria-hidden="true">↗</span>
+          </article>
+
+          <article class="service-item">
+            <span class="service-number">04</span>
+            <div class="service-main">
+              <h3>Creative Direction</h3>
+              <p>
+                Ricerca del linguaggio visivo, sviluppo del concept
+                e progettazione di immagini coerenti con il tuo brand.
+              </p>
+            </div>
+            <span class="service-arrow" aria-hidden="true">↗</span>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- STUDIO E FONDATORI -->
+      <section class="studio section-pad" id="studio">
+        <div class="section-heading">
+          <p class="eyebrow">
+            <span class="eyebrow-line"></span>
+            04 — DIETRO AIRFRAME
+          </p>
+
+          <span class="section-index">TWO MINDS / ONE VISION</span>
+        </div>
+
+        <div class="studio-heading">
+          <h2>Le persone<br>dietro la prospettiva<span class="accent-dot">.</span></h2>
+
+          <p>
+            Due percorsi, una visione condivisa e la voglia di trasformare
+            ogni progetto in qualcosa che meriti di essere ricordato.
+          </p>
+        </div>
+
+        <div class="founders-grid">
+
+          <article class="founder-card">
+            <div class="founder-photo founder-photo-one">
+              <div class="founder-photo-placeholder">
+                <span>YOUR PORTRAIT</span>
+                <span>01</span>
+              </div>
+            </div>
+
+            <div class="founder-info">
+              <div>
+                <h3>Nome Fondatore</h3>
+                <p>Co-founder · FPV & Cinematography</p>
+              </div>
+              <span class="founder-index">01</span>
+            </div>
+
+            <p class="founder-bio">
+              Inserisci qui una breve presentazione personale, il tuo
+              percorso e il contributo creativo al progetto AIRFRAME.
+            </p>
+          </article>
+
+          <article class="founder-card">
+            <div class="founder-photo founder-photo-two">
+              <div class="founder-photo-placeholder">
+                <span>YOUR PORTRAIT</span>
+                <span>02</span>
+              </div>
+            </div>
+
+            <div class="founder-info">
+              <div>
+                <h3>Nome Co-fondatore</h3>
+                <p>Co-founder · Video Production</p>
+              </div>
+              <span class="founder-index">02</span>
+            </div>
+
+            <p class="founder-bio">
+              Inserisci qui una breve presentazione del secondo fondatore,
+              delle sue competenze e del suo ruolo nelle produzioni.
+            </p>
+          </article>
+
+        </div>
+
+        <div class="studio-statement">
+          <span class="statement-mark" aria-hidden="true">“</span>
+          <p>
+            La tecnologia è lo strumento.
+            <span>La prospettiva è ciò che ci distingue.</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- CONTATTI -->
+      <section class="contact section-pad" id="contact">
+        <div class="section-heading">
+          <p class="eyebrow">
+            <span class="eyebrow-line"></span>
+            05 — IL PROSSIMO PROGETTO
+          </p>
+
+          <span class="section-index">LET'S CREATE SOMETHING</span>
+        </div>
+
+        <div class="contact-content">
+          <h2>
+            Hai una visione?<br>
+            <span>Diamole forma.</span>
+          </h2>
+
+          <p>
+            Raccontaci cosa hai in mente. Costruiamo insieme
+            il modo migliore per portarlo sullo schermo.
+          </p>
+
+          <!-- Sostituire l'indirizzo con quello ufficiale AIRFRAME -->
+          <a class="contact-cta" href="mailto:info@airframe.it">
+            <span>Parliamo del tuo progetto</span>
+            <span class="contact-cta-arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
+
+        <div class="contact-details">
+          <div>
+            <span class="detail-label">EMAIL</span>
+            <a href="mailto:info@airframe.it">info@airframe.it</a>
+          </div>
+
+          <div>
+            <span class="detail-label">INSTAGRAM</span>
+            <!-- Inserire il link ufficiale Instagram -->
+            <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">
+              Seguici su Instagram ↗
+            </a>
+          </div>
+
+          <div>
+            <span class="detail-label">LOCATION</span>
+            <span>Italy · Available worldwide</span>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <a class="footer-brand" href="#top">AIRFRAME<span>®</span></a>
+
+      <p>Independent creative studio.</p>
+
+      <a class="back-to-top" href="#top">
+        BACK TO TOP ↑
+      </a>
+
+      <span class="copyright">
+        © <span id="current-year">2026</span> AIRFRAME. ALL RIGHTS RESERVED.
+      </span>
     </footer>
-  </main>
+
+  </div>
 </body>
 </html>
 ```
