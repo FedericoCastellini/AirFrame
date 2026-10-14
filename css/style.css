@@ -810,7 +810,7 @@ a {
     z-index: 1;
     display: grid;
     grid-template-columns: 0.7fr 1fr;
-    grid-template-areas: "links copy";
+    grid-template-areas: "copy links";
     align-items: center;
     gap: clamp(35px, 7vw, 100px);
     width: min(100%, var(--page-width));
