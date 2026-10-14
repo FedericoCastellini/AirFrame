@@ -1,4 +1,3 @@
-
 window.AIRFRAME_CONTENT = {
   brand: {
     name: "AIRFRAME TEST 123",
