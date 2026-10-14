@@ -1,51 +1,44 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#08090b">
-  <title>AIRFRAME — 3D Experience</title>
-  <link rel="stylesheet" href="./style.css">
-  <script type="module" src="./drone.js"></script>
+  <title>AIRFRAME — Drone 3D</title>
+  <link rel="stylesheet" href="./css/style.css">
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://esm.sh/three@0.180.0",
+        "three/addons/": "https://esm.sh/three@0.180.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="./js/main.js"></script>
 </head>
 <body>
-  <main class="experience">
-    <div class="topbar">
-      <a class="logo" href="./index.html">AIRFRAME<span>®</span></a>
-      <span class="topbar-label">FPV / 3D EXPERIENCE</span>
+  <header>
+    <a href="./index.html">AIRFRAME<span>®</span></a>
+    <span>FPV / 3D EXPERIENCE</span>
+  </header>
+
+  <main>
+    <div class="intro">
+      <p>ENGINEERED FOR FLIGHT</p>
+      <h1>Beyond<br>the frame<span>.</span></h1>
+      <p>Precision in motion.</p>
     </div>
 
-    <div class="scene" id="scene">
-      <div class="scene-glow"></div>
-      <div class="scene-grid"></div>
-
-      <div class="scene-heading">
-        <span class="eyebrow">ENGINEERED FOR FLIGHT</span>
-        <h1>Beyond<br>the frame<span>.</span></h1>
-        <p>Precision in motion.</p>
-      </div>
-
-      <div class="model-container" id="model-container">
-        <div class="loader" id="loader">
-          <span class="loader-ring"></span>
-          <p>INITIALIZING 3D EXPERIENCE</p>
-        </div>
-      </div>
-
-      <div class="scene-bottom">
-        <span class="status">
-          <span class="status-dot" id="status-dot"></span>
-          <span id="status">CARICAMENTO MODELLO</span>
-        </span>
-        <span class="interaction-hint">MUOVI IL MOUSE PER ESPLORARE</span>
-      </div>
+    <div id="model-container">
+      <div id="status">CARICAMENTO MODELLO 3D...</div>
     </div>
 
-    <footer class="footer">
-      <span>DJI AVATA 2 — 3D TEST</span>
-      <span>DESIGNED BY AIRFRAME</span>
+    <footer>
+      <span id="model-status">INITIALIZING</span>
+      <span>DJI AVATA 2</span>
     </footer>
   </main>
 </body>
 </html>
+```
