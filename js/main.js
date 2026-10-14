@@ -1,415 +1,373 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 
-/* =========================================================
-   AIRFRAME — THREE.JS / DJI AVATA 2
-   ========================================================= */
+/* =========================================
+AIRFRAME — MAIN JS
+========================================= */
 
 const container = document.getElementById("model-container");
 const canvas = document.getElementById("drone-canvas");
 
-if (!container || !canvas) {
-  console.error("AIRFRAME: contenitore o canvas 3D non trovato.");
+if (container && canvas) {
+initializeDrone();
 } else {
-  initializeDrone();
+console.error("AIRFRAME: contenitore o canvas 3D non trovato.");
 }
 
 function initializeDrone() {
-  /* -------------------------------------------------------
-     SCENA
-     ------------------------------------------------------- */
+const scene = new THREE.Scene();
 
-  const scene = new THREE.Scene();
-
-  const camera = new THREE.PerspectiveCamera(
+const camera = new THREE.PerspectiveCamera(
     35,
     1,
     0.1,
     100
-  );
+);
 
-  camera.position.set(0, 0.35, 6.5);
-  camera.lookAt(0, 0, 0);
+camera.position.set(0, 0.35, 6.5);
+camera.lookAt(0, 0, 0);
 
-  /* -------------------------------------------------------
-     RENDERER
-     Utilizza il canvas già presente nell'HTML.
-     ------------------------------------------------------- */
-
-  const renderer = new THREE.WebGLRenderer({
+const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
     alpha: true,
     powerPreference: "high-performance"
-  });
+});
 
-  renderer.setPixelRatio(
+renderer.setPixelRatio(
     Math.min(window.devicePixelRatio || 1, 2)
-  );
+);
 
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.2;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+renderer.setClearColor(0x000000, 0);
 
-  renderer.setClearColor(0x000000, 0);
+/* LIGHTING */
 
-  /* -------------------------------------------------------
-     ILLUMINAZIONE CINEMATOGRAFICA
-     ------------------------------------------------------- */
-
-  const ambientLight = new THREE.HemisphereLight(
+const ambientLight = new THREE.HemisphereLight(
     0xffffff,
     0x303746,
     2
-  );
+);
+scene.add(ambientLight);
 
-  scene.add(ambientLight);
-
-  const keyLight = new THREE.DirectionalLight(
+const keyLight = new THREE.DirectionalLight(
     0xffffff,
     3
-  );
+);
+keyLight.position.set(4, 6, 5);
+scene.add(keyLight);
 
-  keyLight.position.set(4, 6, 5);
-  scene.add(keyLight);
-
-  const rimLight = new THREE.DirectionalLight(
-    0x8baaff,
+const rimLight = new THREE.DirectionalLight(
+    0x8daeff,
     2.5
-  );
+);
+rimLight.position.set(-5, 3, -4);
+scene.add(rimLight);
 
-  rimLight.position.set(-5, 3, -4);
-  scene.add(rimLight);
-
-  const fillLight = new THREE.DirectionalLight(
-    0xc7b89b,
+const fillLight = new THREE.DirectionalLight(
+    0xd8d0c2,
     1.5
-  );
+);
+fillLight.position.set(0, -2, 4);
+scene.add(fillLight);
 
-  fillLight.position.set(0, -2, 4);
-  scene.add(fillLight);
-
-  const topLight = new THREE.DirectionalLight(
+const topLight = new THREE.DirectionalLight(
     0xffffff,
     1.2
-  );
+);
+topLight.position.set(0, 7, 0);
+scene.add(topLight);
 
-  topLight.position.set(0, 7, 0);
-  scene.add(topLight);
+/* MODEL */
 
-  /* -------------------------------------------------------
-     MODELLO 3D
-     ------------------------------------------------------- */
+const pivot = new THREE.Group();
+scene.add(pivot);
 
-  const pivot = new THREE.Group();
-  scene.add(pivot);
+let drone = null;
+let modelLoaded = false;
 
-  let drone = null;
-  let modelLoaded = false;
+let targetRotationX = 0;
+let targetRotationY = -0.45;
 
-  let targetRotationX = 0;
-  let targetRotationY = -0.45;
+let currentRotationX = 0;
+let currentRotationY = -0.45;
 
-  let currentRotationX = 0;
-  let currentRotationY = -0.45;
+const loader = new GLTFLoader();
 
-  const loader = new GLTFLoader();
+loader.setMeshoptDecoder(MeshoptDecoder);
 
-  loader.load(
-    "./assets/models/dji-avata-2-optimized.glb",
+loader.load(
+    "./assets/models/dji-avata-2-ultra.glb",
 
     (gltf) => {
-      drone = gltf.scene;
+        drone = gltf.scene;
 
-      // Calcola le dimensioni reali del modello.
-      const bounds = new THREE.Box3().setFromObject(drone);
-      const size = bounds.getSize(new THREE.Vector3());
-      const center = bounds.getCenter(new THREE.Vector3());
+        const bounds = new THREE.Box3().setFromObject(drone);
+        const size = bounds.getSize(new THREE.Vector3());
+        const center = bounds.getCenter(new THREE.Vector3());
 
-      const maxDimension = Math.max(
-        size.x,
-        size.y,
-        size.z
-      );
+        const maxDimension = Math.max(
+            size.x,
+            size.y,
+            size.z
+        );
 
-      if (!Number.isFinite(maxDimension) || maxDimension <= 0) {
-        console.error("AIRFRAME: dimensioni del modello non valide.");
-        drone = null;
-        return;
-      }
+        if (!Number.isFinite(maxDimension) || maxDimension <= 0) {
+            console.error(
+                "AIRFRAME: dimensioni del modello non valide."
+            );
+            drone = null;
+            return;
+        }
 
-      // Centra il modello sul proprio punto di rotazione.
-      drone.position.sub(center);
+        drone.position.sub(center);
+        drone.scale.setScalar(3.2 / maxDimension);
 
-      // Mantiene proporzioni e orientamento originali.
-      drone.scale.setScalar(3.2 / maxDimension);
+        pivot.add(drone);
+        pivot.rotation.set(0, -0.45, 0);
 
-      pivot.add(drone);
+        modelLoaded = true;
 
-      // Imposta l'inquadratura iniziale.
-      pivot.rotation.set(0, -0.45, 0);
-
-      modelLoaded = true;
-
-      console.info("AIRFRAME: modello 3D caricato.");
+        console.info("AIRFRAME: modello 3D caricato correttamente.");
     },
 
     undefined,
 
     (error) => {
-      // Nessun messaggio tecnico viene mostrato nella pagina.
-      console.error(
-        "AIRFRAME: impossibile caricare il modello DJI Avata 2.",
-        error
-      );
+        console.error(
+            "AIRFRAME: errore durante il caricamento del modello 3D.",
+            error
+        );
     }
-  );
+);
 
-  /* -------------------------------------------------------
-     INTERAZIONE CON IL MOUSE E IL TOUCH
-     ------------------------------------------------------- */
+/* INTERACTION */
 
-  let isDragging = false;
-  let activePointerId = null;
+let isDragging = false;
+let lastPointerX = 0;
+let lastPointerY = 0;
 
-  let previousPointerX = 0;
-  let previousPointerY = 0;
+canvas.style.cursor = "grab";
 
-  const rotationSensitivity = 0.008;
+canvas.addEventListener("pointerdown", (event) => {
+    isDragging = true;
 
-  canvas.addEventListener("pointerdown", (event) => {
-    if (event.pointerType === "mouse") {
-      isDragging = true;
-      activePointerId = event.pointerId;
+    lastPointerX = event.clientX;
+    lastPointerY = event.clientY;
 
-      previousPointerX = event.clientX;
-      previousPointerY = event.clientY;
+    canvas.style.cursor = "grabbing";
 
-      canvas.style.cursor = "grabbing";
-
-      canvas.setPointerCapture(event.pointerId);
-    } else {
-      isDragging = true;
-      activePointerId = event.pointerId;
-
-      previousPointerX = event.clientX;
-      previousPointerY = event.clientY;
-
-      canvas.setPointerCapture(event.pointerId);
+    try {
+        canvas.setPointerCapture(event.pointerId);
+    } catch {
+        // Pointer capture non disponibile.
     }
-  });
+});
 
-  canvas.addEventListener("pointermove", (event) => {
-    if (!modelLoaded) return;
+canvas.addEventListener("pointermove", (event) => {
+    const rect = container.getBoundingClientRect();
 
-    if (event.pointerType === "mouse" && !isDragging) {
-      // Movimento fluido quando si sposta il mouse
-      // sopra il modello, senza richiedere un clic.
-      const rect = container.getBoundingClientRect();
+    if (isDragging) {
+        const deltaX = event.clientX - lastPointerX;
+        const deltaY = event.clientY - lastPointerY;
 
-      if (!rect.width || !rect.height) return;
+        targetRotationY += deltaX * 0.008;
+        targetRotationX += deltaY * 0.008;
 
-      const x = (event.clientX - rect.left) / rect.width;
-      const y = (event.clientY - rect.top) / rect.height;
+        targetRotationX = THREE.MathUtils.clamp(
+            targetRotationX,
+            -0.65,
+            0.65
+        );
 
-      targetRotationY = (x - 0.5) * 1.4 - 0.45;
-      targetRotationX = (y - 0.5) * 0.5;
+        lastPointerX = event.clientX;
+        lastPointerY = event.clientY;
+    } else if (event.pointerType === "mouse") {
+        const normalizedX =
+            ((event.clientX - rect.left) / rect.width) * 2 - 1;
 
-      return;
+        const normalizedY =
+            ((event.clientY - rect.top) / rect.height) * 2 - 1;
+
+        targetRotationY = -0.45 + normalizedX * 0.28;
+        targetRotationX = normalizedY * 0.12;
     }
+});
+
+function stopDragging(event) {
+    isDragging = false;
+    canvas.style.cursor = "grab";
 
     if (
-      !isDragging ||
-      event.pointerId !== activePointerId
+        event &&
+        canvas.hasPointerCapture &&
+        canvas.hasPointerCapture(event.pointerId)
     ) {
-      return;
+        try {
+            canvas.releasePointerCapture(event.pointerId);
+        } catch {
+            // Il puntatore potrebbe essere già stato rilasciato.
+        }
     }
+}
 
-    const deltaX = event.clientX - previousPointerX;
-    const deltaY = event.clientY - previousPointerY;
-
-    targetRotationY += deltaX * rotationSensitivity;
-    targetRotationX += deltaY * rotationSensitivity;
-
-    targetRotationX = THREE.MathUtils.clamp(
-      targetRotationX,
-      -0.65,
-      0.65
-    );
-
-    previousPointerX = event.clientX;
-    previousPointerY = event.clientY;
-  });
-
-  function stopDragging(event) {
-    if (event.pointerId !== activePointerId) return;
-
+canvas.addEventListener("pointerup", stopDragging);
+canvas.addEventListener("pointercancel", stopDragging);
+canvas.addEventListener("lostpointercapture", () => {
     isDragging = false;
-    activePointerId = null;
+    canvas.style.cursor = "grab";
+});
 
-    if (event.pointerType === "mouse") {
-      canvas.style.cursor = "grab";
-    }
-  }
-
-  canvas.addEventListener("pointerup", stopDragging);
-  canvas.addEventListener("pointercancel", stopDragging);
-  canvas.addEventListener("lostpointercapture", stopDragging);
-
-  canvas.addEventListener("pointerleave", () => {
+canvas.addEventListener("pointerleave", () => {
     if (!isDragging) {
-      canvas.style.cursor = "grab";
+        targetRotationX = 0;
+        targetRotationY = -0.45;
     }
-  });
+});
 
-  /* -------------------------------------------------------
-     RIDIMENSIONAMENTO RESPONSIVE
-     ------------------------------------------------------- */
+/* RESPONSIVE RESIZE */
 
-  function resizeRenderer() {
+function resizeRenderer() {
     const width = container.clientWidth;
     const height = container.clientHeight;
 
-    if (width <= 0 || height <= 0) return;
+    if (width <= 0 || height <= 0) {
+        return;
+    }
 
     camera.aspect = width / height;
 
-    // Allontana leggermente la camera sugli schermi stretti.
     if (width < 700) {
-      camera.position.z = 7.1;
-      camera.position.y = 0.25;
+        camera.position.set(0, 0.25, 7.1);
     } else {
-      camera.position.z = 6.5;
-      camera.position.y = 0.35;
+        camera.position.set(0, 0.35, 6.5);
     }
 
     camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
 
     renderer.setPixelRatio(
-      Math.min(window.devicePixelRatio || 1, 2)
+        Math.min(window.devicePixelRatio || 1, 2)
     );
 
     renderer.setSize(width, height, false);
-  }
+}
 
-  const resizeObserver = new ResizeObserver(() => {
-    resizeRenderer();
-  });
+const resizeObserver = new ResizeObserver(resizeRenderer);
+resizeObserver.observe(container);
 
-  resizeObserver.observe(container);
+window.addEventListener("resize", resizeRenderer);
 
-  window.addEventListener("resize", resizeRenderer);
+resizeRenderer();
 
-  resizeRenderer();
+/* ANIMATION */
 
-  /* -------------------------------------------------------
-     ANIMAZIONE
-     ------------------------------------------------------- */
+const clock = new THREE.Clock();
 
-  const clock = new THREE.Clock();
+let animationFrameId = null;
+let isPageVisible = !document.hidden;
 
-  let animationFrameId = null;
-  let isPageVisible = !document.hidden;
-
-  function animate() {
-    if (!isPageVisible) return;
+function animate() {
+    if (!isPageVisible) {
+        return;
+    }
 
     animationFrameId = requestAnimationFrame(animate);
 
     const elapsed = clock.getElapsedTime();
 
     if (modelLoaded && drone) {
-      // Interpolazione morbida della rotazione.
-      currentRotationX +=
-        (targetRotationX - currentRotationX) * 0.045;
+        currentRotationX +=
+            (targetRotationX - currentRotationX) * 0.045;
 
-      currentRotationY +=
-        (targetRotationY - currentRotationY) * 0.045;
+        currentRotationY +=
+            (targetRotationY - currentRotationY) * 0.045;
 
-      pivot.rotation.x = currentRotationX;
-      pivot.rotation.y = currentRotationY;
+        pivot.rotation.x = currentRotationX;
+        pivot.rotation.y = currentRotationY;
 
-      // Leggera sospensione cinematografica.
-      pivot.position.y = Math.sin(elapsed * 0.8) * 0.045;
+        pivot.position.y = Math.sin(elapsed * 0.8) * 0.045;
     }
 
     renderer.render(scene, camera);
-  }
+}
 
-  animate();
+animate();
 
-  /* -------------------------------------------------------
-     OTTIMIZZAZIONE QUANDO LA PAGINA NON È VISIBILE
-     ------------------------------------------------------- */
+/* SAVE RESOURCES WHEN TAB IS HIDDEN */
 
-  document.addEventListener("visibilitychange", () => {
+document.addEventListener("visibilitychange", () => {
     isPageVisible = !document.hidden;
 
-    if (isPageVisible) {
-      clock.start();
-      animate();
+    if (!isPageVisible) {
+        if (animationFrameId !== null) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
     } else {
-      cancelAnimationFrame(animationFrameId);
-      animationFrameId = null;
+        clock.start();
+
+        if (animationFrameId === null) {
+            animate();
+        }
     }
-  });
+});
 
-  /* -------------------------------------------------------
-     MENU MOBILE
-     ------------------------------------------------------- */
+}
 
-  const menuToggle = document.querySelector(".menu-toggle");
-  const mobileNav = document.getElementById("mobile-nav");
+/* =========================================
+MOBILE NAVIGATION
+========================================= */
 
-  if (menuToggle && mobileNav) {
-    function closeMenu() {
-      menuToggle.setAttribute("aria-expanded", "false");
-      menuToggle.setAttribute("aria-label", "Apri il menu");
-      mobileNav.hidden = true;
-    }
+const menuButton = document.querySelector(".menu-toggle");
+const mobileNav = document.querySelector(".mobile-nav");
 
-    menuToggle.addEventListener("click", () => {
-      const isExpanded =
-        menuToggle.getAttribute("aria-expanded") === "true";
+if (menuButton && mobileNav) {
+function closeMenu() {
+mobileNav.hidden = true;
+menuButton.setAttribute("aria-expanded", "false");
+}
 
-      menuToggle.setAttribute(
+function toggleMenu() {
+    const isOpen = menuButton.getAttribute("aria-expanded") === "true";
+
+    menuButton.setAttribute(
         "aria-expanded",
-        String(!isExpanded)
-      );
+        String(!isOpen)
+    );
 
-      menuToggle.setAttribute(
-        "aria-label",
-        isExpanded ? "Apri il menu" : "Chiudi il menu"
-      );
+    mobileNav.hidden = isOpen;
+}
 
-      mobileNav.hidden = isExpanded;
-    });
+menuButton.addEventListener("click", toggleMenu);
 
-    mobileNav.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", closeMenu);
-    });
+mobileNav.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closeMenu);
+});
 
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 700) {
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
         closeMenu();
-      }
-    });
+    }
+});
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
+window.addEventListener("resize", () => {
+    if (window.innerWidth > 700) {
         closeMenu();
-      }
-    });
-  }
+    }
+});
 
-  /* -------------------------------------------------------
-     ANNO AUTOMATICO NEL FOOTER
-     ------------------------------------------------------- */
+}
 
-  const yearElement = document.getElementById("current-year");
+/* =========================================
+CURRENT YEAR
+========================================= */
 
-  if (yearElement) {
-    yearElement.textContent = new Date().getFullYear();
-  }
+const yearElement = document.getElementById("current-year");
+
+if (yearElement) {
+yearElement.textContent = new Date().getFullYear();
 }
