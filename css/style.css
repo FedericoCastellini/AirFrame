@@ -786,96 +786,140 @@ a {
     font-size: 12px;
     letter-spacing: 0.02em;
 }
-/* CONTACT - WHATSAPP */
+
+/* =========================================
+   CONTACT — WHATSAPP
+========================================= */
+
+.contact-section {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(100px, 14vw, 190px) var(--page-padding);
+    border-top: 1px solid var(--line);
+    background:
+        radial-gradient(
+            ellipse at 75% 65%,
+            rgba(53, 65, 92, 0.15),
+            transparent 45%
+        ),
+        #0a0b0d;
+}
+
 .contact-inner {
-  display: grid;
-  grid-template-columns: 1fr 0.7fr;
-  align-items: center;
-  gap: 80px;
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 0.7fr 1fr;
+    grid-template-areas: "links copy";
+    align-items: center;
+    gap: clamp(35px, 7vw, 100px);
+    width: min(100%, var(--page-width));
+    margin: 0 auto;
 }
 
 .contact-info {
-  min-width: 0;
+    grid-area: copy;
+    min-width: 0;
+}
+
+.contact-section h2 {
+    max-width: 850px;
+    margin: 22px 0 30px;
+    font-family: "Manrope", sans-serif;
+    font-size: clamp(45px, 8vw, 105px);
+    font-weight: 400;
+    letter-spacing: -0.075em;
+    line-height: 0.98;
+}
+
+.contact-section h2 span {
+    color: #9eabc9;
+}
+
+.contact-description {
+    max-width: 430px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.9;
 }
 
 .contact-links {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+    grid-area: links;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    min-width: 0;
 }
 
 .contact-label {
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: #9297a1;
-  margin-bottom: 22px;
+    margin-bottom: 18px;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    line-height: 1.5;
 }
 
 .contact-links a {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 22px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  color: #fff;
-  text-decoration: none;
-  font-size: 17px;
-  transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+    color: #e6e7e9;
+    font-size: 15px;
+    overflow-wrap: anywhere;
+    transition:
+        color 180ms ease,
+        border-color 180ms ease;
 }
 
 .contact-links a:first-of-type {
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1px solid var(--line);
 }
 
 .whatsapp-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 50%;
-  color: #42d392;
-  font-size: 16px;
-  transition: background 0.3s ease, color 0.3s ease;
+    display: inline-flex;
+    flex: 0 0 34px;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #42d392;
+    font-size: 15px;
+    transition:
+        background 180ms ease,
+        color 180ms ease,
+        border-color 180ms ease;
 }
 
 .contact-arrow {
-  margin-left: auto;
-  color: #9297a1;
-  transition: transform 0.3s ease, color 0.3s ease;
+    margin-left: auto;
+    color: var(--muted);
+    transition:
+        transform 180ms ease,
+        color 180ms ease;
 }
 
 .contact-links a:hover {
-  color: #42d392;
+    border-color: rgba(66, 211, 146, 0.55);
+    color: #42d392;
 }
 
 .contact-links a:hover .whatsapp-icon {
-  background: #42d392;
-  color: #08090b;
+    border-color: #42d392;
+    background: #42d392;
+    color: #08090b;
 }
 
 .contact-links a:hover .contact-arrow {
-  transform: translate(3px, -3px);
-  color: #42d392;
+    color: #42d392;
+    transform: translate(3px, -3px);
 }
 
-/* MOBILE */
-@media (max-width: 768px) {
-  .contact-inner {
-    grid-template-columns: 1fr;
-    gap: 38px;
-  }
-
-  .contact-links {
-    width: 100%;
-  }
-
-  .contact-links a {
-    padding: 18px 0;
-    font-size: 16px;
-  }
-}
 /* =========================================
    FOOTER
 ========================================= */
@@ -961,7 +1005,7 @@ a {
     }
 
     .contact-inner {
-        grid-template-columns: 1fr 0.7fr;
+        grid-template-columns: 0.7fr 1fr;
     }
 }
 
@@ -1136,11 +1180,19 @@ a {
 
     .contact-inner {
         grid-template-columns: 1fr;
+        grid-template-areas:
+            "copy"
+            "links";
         gap: 42px;
     }
 
     .contact-section h2 {
         font-size: clamp(48px, 13vw, 78px);
+    }
+
+    .contact-links a {
+        padding: 18px 0;
+        font-size: 15px;
     }
 
     .footer-inner {
